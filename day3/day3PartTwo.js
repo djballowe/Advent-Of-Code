@@ -71,7 +71,4 @@ const getNum = (file, orientation, position, j, i) => {
     return parseInt(num);
 };
 
-// 323347 low
-// 83805819 low
-
 main();
