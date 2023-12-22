@@ -32,38 +32,20 @@ const convert = (seeds, map) => {
     let ranges = map.map((set) => {
         return [set[1], set[1] + set[2], set[0] - set[1]];
     });
-    let seedRanges = [];
-    for (let i = 0; i < seeds.length; i += 2) {
-        let ceil = seeds[i] + seeds[i + 1];
-        let floor = seeds[i];
-        let curSeed = seeds[i];
-        let prevSeed = curSeed - 1;
-        let count = seeds[i];
+    for (let i = 0; i < seeds.length; i++) {
         for (let j = 0; j < ranges.length; j++) {
-            while (count <= ceil) {
-                let inRange = count >= ranges[j][0] && count <= ranges[j][1];
-                if (inRange) {
-                    curSeed = count + ranges[j][2];
-                    if (curSeed < floor) {
-                        floor = curSeed;
-                    }
-                } else {
-                    curSeed = count;
-                }
-                if (prevSeed + 1 !== curSeed) {
-                    seedRanges.push(floor, prevSeed);
-                    floor = curSeed;
-                }
-                prevSeed = curSeed;
-                count++;
+            if (seeds[i] >= ranges[j][0] && seeds[i] <= ranges[j][1]) {
+                // restart here fresh when you come back. the solution is ranges of seeds
+                seeds[i] += ranges[j][2];
+                break;
             }
         }
     }
-    return seedRanges;
+    return seeds;
 };
 
 const buffer = () => {
-    return readFileSync('./test.txt', 'utf8', (data) => {
+    return readFileSync('./input.txt', 'utf8', (data) => {
         return data.toString();
     });
 };
@@ -74,13 +56,11 @@ const main = () => {
         .filter((x) => x.length);
     let seeds = parseSeeds(file);
     let maps = parseMaps(file);
-    let ranges;
     maps.forEach((map) => {
-        ranges = convert(seeds, map);
-        console.log(ranges)
-    });
-    let ans = Math.min(...ranges);
-    console.log(ans);
+        seeds = convert(seeds, map);
+    })
+    let ans = Math.min(...seeds)
+    console.log(ans)
 };
 
 main();
