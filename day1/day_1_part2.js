@@ -50,7 +50,6 @@ const main = () => {
                 }
                 ans = f + l
                 total += parseInt(ans)
-                console.log(ans)
                 f = ''
                 l = ''
             }
@@ -58,7 +57,7 @@ const main = () => {
     }
     console.log(total)
 }
-// 53348
+
 const replace = () => {
     return readFileSync('./inputs.txt', 'utf8', (data) => {
         return data.toString()
