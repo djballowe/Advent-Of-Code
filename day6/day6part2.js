@@ -11,10 +11,13 @@ const parseTimes = (file) => {
         .split(/\r?\n/)
         .filter((x) => x.length)
         .map((x) =>
-            x
-                .split(':')[1]
-                .split(' ')
-                .filter((x) => x !== '')
+            parseInt(
+                x
+                    .split(':')[1]
+                    .split(' ')
+                    .filter((x) => x !== '')
+                    .join('')
+            )
         );
     return { time: data[0], distance: data[1] };
 };
@@ -38,9 +41,7 @@ const main = () => {
 
     let ans = 1;
 
-    for (let i = 0; i < data.distance.length; i++) {
-        ans *= race(data.distance[i], data.time[i]);
-    }
+    ans *= race(data.distance, data.time);
 
     console.log(ans);
 };
