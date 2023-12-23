@@ -1,12 +1,12 @@
 import { readFileSync } from 'fs';
 
 const hands = {
-    '50000': 7, 
-    '31000': 6,
-    '12000': 5,
-    '20100': 4,
+    50000: 7,
+    31000: 6,
+    12000: 5,
+    20100: 4,
     '01100': 3,
-    '10010': 2,
+    10010: 2,
     '00001': 1,
 };
 
@@ -14,7 +14,7 @@ const ranks = {
     A: 14,
     K: 13,
     Q: 12,
-    J: 11,
+    J: 1,
     T: 10,
     9: 9,
     8: 8,
@@ -26,8 +26,11 @@ const ranks = {
     2: 2,
 };
 
+const joker = 'J';
+let weLiveInASociety = false;
+
 const buffer = () => {
-    return readFileSync('./input.txt', 'utf8', (data) => {
+    return readFileSync('./test.txt', 'utf8', (data) => {
         return data.toString();
     });
 };
@@ -46,13 +49,32 @@ const parseCards = (file) => {
 };
 
 const rankHand = (card) => {
+    console.log('-----------------------')
     let track = {};
     card.hand.forEach((card) => {
         track[card] ? (track[card] += 1) : (track[card] = 1);
     });
     let freq = new Array(5).fill(0);
+    let hp = -1;
     for (let key in track) {
+        weLiveInASociety = key === joker ? true : false;
         freq[track[key] - 1]++;
+        if (freq[track[key] - 1] > hp && !weLiveInASociety) {
+           console.log(track[key] - 1)
+            hp = track[key] - 1;
+        }
+    }
+    if (track[joker]) {
+        console.log(card);
+        console.log(freq);
+        console.log(hp)
+        freq[track[joker] - 1]--;
+        if (freq[track[joker]] !== freq[hp]) { // theres something wrong here
+            freq[hp]--;
+        }
+        freq[hp + track[joker]]++;
+        console.log(freq);
+        console.log('-------------------');
     }
     card.rank = hands[freq.join('')];
 };
@@ -70,8 +92,12 @@ const main = () => {
             }
         }
     });
-    cards.forEach((card, i) => ans += card.bid * (i + 1))
+    cards.forEach((card, i) => (ans += card.bid * (i + 1)));
+    console.log(ans);
 };
+
+// 250207223 high
+// 252489153 high
 
 main();
 
