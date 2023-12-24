@@ -1,12 +1,12 @@
 import { readFileSync } from 'fs';
 
 const hands = {
-    50000: 7,
-    31000: 6,
-    12000: 5,
-    20100: 4,
+    '50000': 7,
+    '31000': 6,
+    '12000': 5,
+    '20100': 4,
     '01100': 3,
-    10010: 2,
+    '10010': 2,
     '00001': 1,
 };
 
@@ -27,10 +27,9 @@ const ranks = {
 };
 
 const joker = 'J';
-let weLiveInASociety = false;
 
 const buffer = () => {
-    return readFileSync('./test.txt', 'utf8', (data) => {
+    return readFileSync('./input.txt', 'utf8', (data) => {
         return data.toString();
     });
 };
@@ -49,32 +48,24 @@ const parseCards = (file) => {
 };
 
 const rankHand = (card) => {
-    console.log('-----------------------')
     let track = {};
     card.hand.forEach((card) => {
         track[card] ? (track[card] += 1) : (track[card] = 1);
     });
     let freq = new Array(5).fill(0);
-    let hp = -1;
+    let i = 0;
     for (let key in track) {
-        weLiveInASociety = key === joker ? true : false;
-        freq[track[key] - 1]++;
-        if (freq[track[key] - 1] > hp && !weLiveInASociety) {
-           console.log(track[key] - 1)
-            hp = track[key] - 1;
+        let freqIndex = track[key] - 1;
+        let weLiveInASociety = key === joker ? true : false;
+        freq[freqIndex]++;
+        if (freqIndex > i && freq[freqIndex] > 0 && !weLiveInASociety) {
+            i = freqIndex;
         }
     }
-    if (track[joker]) {
-        console.log(card);
-        console.log(freq);
-        console.log(hp)
+    if (track[joker] && track[joker] !== 5) {
         freq[track[joker] - 1]--;
-        if (freq[track[joker]] !== freq[hp]) { // theres something wrong here
-            freq[hp]--;
-        }
-        freq[hp + track[joker]]++;
-        console.log(freq);
-        console.log('-------------------');
+        freq[i]--;
+        freq[i + track[joker]]++;
     }
     card.rank = hands[freq.join('')];
 };
@@ -95,9 +86,6 @@ const main = () => {
     cards.forEach((card, i) => (ans += card.bid * (i + 1)));
     console.log(ans);
 };
-
-// 250207223 high
-// 252489153 high
 
 main();
 
