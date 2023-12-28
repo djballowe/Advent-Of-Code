@@ -21,7 +21,7 @@ const parseFile = (file) => {
 const calculate = (line) => {
     let end = false;
     let map = { 0: line };
-    let x = line[line.length - 1];
+    let x = line[0];
     let a = 1;
     while (!end) {
         let acc = [];
@@ -38,9 +38,9 @@ const calculate = (line) => {
     const values = Object.values(map);
     const next = [0];
     for (let i = values.length - 2; i >= 1; i--) {
-        next.push(values[i][values[i].length - 1] + next[next.length - 1]);
+        next.push(values[i][0] - next[next.length - 1]);
     }
-    return next.pop() + x;
+    return x - next.pop();
 };
 
 const eol = (diff) => {
