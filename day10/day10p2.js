@@ -69,29 +69,46 @@ const getDirection = (direction) => {
 };
 
 const traverse = (file, path) => {
+    const pathX = [];
+    const pathY = [];
     let prevNode = path.start;
-    console.log(path);
-    let step = 1;
     while (path.val !== 'S') {
         const direction = getDirection([
             path.index[0] - prevNode[0],
             path.index[1] - prevNode[1],
         ]);
-
         let value = path.val;
         directionMap[direction].forEach((x) => {
             if (x.val === value) {
                 prevNode = path.index;
-                file[path.index[0]][path.index[1]] = '+';
+                pathX.push(path.index[1]);
+                pathY.push(path.index[0]);
                 path.index = path.index.map(
                     (indices, i) => (indices += x.move[i])
                 );
+                console.log(file[path.index[0]][path.index[1]]);
                 path.val = file[path.index[0]][path.index[1]];
             }
         });
-        step++;
     }
-    return step;
+    return { pathX, pathY };
+};
+
+const calculateArea = (pathNodes) => {
+    // Shoelace Algorithm
+    console.log(pathNodes)
+    const { pathX, pathY } = pathNodes;
+    let accX = 0;
+    let accY = 0;
+    for (let i = 0; i < pathX.length - 1; i++) {
+        accX += pathX[i] * pathY[i + 1];
+    }
+    for (let i = 0; i < pathY.length - 1; i++) {
+        accY += pathY[i] * pathX[i + 1];
+    }
+    let area = (accX - accY) / 2
+    let inner = area - (pathX.length / 2) + 1
+    console.log(area)
 };
 
 const buffer = () => {
@@ -103,11 +120,10 @@ const buffer = () => {
 const main = () => {
     let file = buffer()
         .split(/\r?\n/)
-        .filter((x) => x.length)
+        .filter((x) => x.length);
     const path = findPaths(file);
-
-    let ans = traverse(file, path[0]);
-    console.log(ans);
-};
+    let pathNodes = traverse(file, path[0]);
+    let area = calculateArea(pathNodes);
+}
 
 main();
