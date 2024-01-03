@@ -68,53 +68,34 @@ const getDirection = (direction) => {
     return index;
 };
 
-const check = (index1, index2) => {
-    return index1[0] === index2[0] && index1[1] === index2[1];
-};
-
-const traverse = (file, path1, path2) => {
-    let prevNode1 = path1.start;
-    let prevNode2 = path2.start;
-    let intersect = false;
+const traverse = (file, path) => {
+    let prevNode = path.start;
+    console.log(path);
     let step = 1;
-    while (!intersect) {
-        const direction1 = getDirection([
-            path1.index[0] - prevNode1[0],
-            path1.index[1] - prevNode1[1],
+    while (path.val !== 'S') {
+        const direction = getDirection([
+            path.index[0] - prevNode[0],
+            path.index[1] - prevNode[1],
         ]);
-        const direction2 = getDirection([
-            path2.index[0] - prevNode2[0],
-            path2.index[1] - prevNode2[1],
-        ]);
-        let value = path1.val;
-        let value2 = path2.val;
-        directionMap[direction1].forEach((x) => {
+
+        let value = path.val;
+        directionMap[direction].forEach((x) => {
             if (x.val === value) {
-                prevNode1 = path1.index;
-                path1.index = path1.index.map(
+                prevNode = path.index;
+                file[path.index[0]][path.index[1]] = '+';
+                path.index = path.index.map(
                     (indices, i) => (indices += x.move[i])
                 );
-                path1.val = file[path1.index[0]][path1.index[1]];
-            }
-        });
-        directionMap[direction2].forEach((x) => {
-            if (x.val === value2) {
-                prevNode2 = path2.index;
-                path2.index = path2.index.map(
-                    (indices, i) => (indices += x.move[i])
-                );
-                path2.val = file[path2.index[0]][path2.index[1]];
+                path.val = file[path.index[0]][path.index[1]];
             }
         });
         step++;
-        intersect = check(path1.index, path2.index);
-        console.log(path2);
     }
-    return step
+    return step;
 };
 
 const buffer = () => {
-    return readFileSync('./input.txt', 'utf8', (data) => {
+    return readFileSync('./test.txt', 'utf8', (data) => {
         return data.toString();
     });
 };
@@ -122,11 +103,11 @@ const buffer = () => {
 const main = () => {
     let file = buffer()
         .split(/\r?\n/)
-        .filter((x) => x.length);
-    const [path1, path2] = findPaths(file);
+        .filter((x) => x.length)
+    const path = findPaths(file);
 
-    let ans = traverse(file, path1, path2);
-    console.log(ans)
+    let ans = traverse(file, path[0]);
+    console.log(ans);
 };
 
 main();
