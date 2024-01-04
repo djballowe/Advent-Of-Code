@@ -72,6 +72,7 @@ const traverse = (file, path) => {
     const pathX = [];
     const pathY = [];
     let prevNode = path.start;
+    let step = 1;
     while (path.val !== 'S') {
         const direction = getDirection([
             path.index[0] - prevNode[0],
@@ -86,33 +87,40 @@ const traverse = (file, path) => {
                 path.index = path.index.map(
                     (indices, i) => (indices += x.move[i])
                 );
-                console.log(file[path.index[0]][path.index[1]]);
                 path.val = file[path.index[0]][path.index[1]];
             }
         });
+        step++;
     }
     return { pathX, pathY };
 };
 
 const calculateArea = (pathNodes) => {
     // Shoelace Algorithm
-    console.log(pathNodes)
     const { pathX, pathY } = pathNodes;
     let accX = 0;
     let accY = 0;
-    for (let i = 0; i < pathX.length - 1; i++) {
-        accX += pathX[i] * pathY[i + 1];
+    for (let i = 0; i < pathX.length; i++) {
+        if (i === pathX.length - 1) {
+            accX += pathX[i] * pathY[0];
+        } else {
+            accX += pathX[i] * pathY[i + 1];
+        }
     }
-    for (let i = 0; i < pathY.length - 1; i++) {
-        accY += pathY[i] * pathX[i + 1];
+    for (let i = 0; i < pathY.length; i++) {
+        if (i === pathY.length - 1) {
+            accY += pathY[i] * pathX[0];
+        } else {
+            accY += pathY[i] * pathX[i + 1];
+        }
     }
-    let area = (accX - accY) / 2
-    let inner = area - (pathX.length / 2) + 1
-    console.log(area)
+    let area = Math.abs((accX - accY)) / 2;
+    let inner = area - ((pathX.length + 1) / 2) + 1
+    return inner;
 };
 
 const buffer = () => {
-    return readFileSync('./test.txt', 'utf8', (data) => {
+    return readFileSync('./input.txt', 'utf8', (data) => {
         return data.toString();
     });
 };
@@ -123,7 +131,8 @@ const main = () => {
         .filter((x) => x.length);
     const path = findPaths(file);
     let pathNodes = traverse(file, path[0]);
-    let area = calculateArea(pathNodes);
-}
+    let tiles = calculateArea(pathNodes);
+    console.log(tiles)
+};
 
 main();
