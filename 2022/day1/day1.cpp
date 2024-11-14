@@ -1,28 +1,42 @@
 #include "iostream"
-#include <algorithm>
 #include <fstream>
 #include <string>
 
+using namespace std;
+
 int main() {
-    std::fstream file("day1.txt");
+    fstream file("day1.txt");
     if (!file) {
-        std::cerr << "Unable to read file";
+        cerr << "Unable to read file";
         return 1;
     }
 
-    std::string line;
+    string line;
     int count = 0;
-    int largest = 0;
-    while (std::getline(file, line)) {
+    int top[3] = {0, 0, 0};
+    while (getline(file, line)) {
         if (line == "") {
-            largest = std::max(largest, count);
+            if (count > top[0]) {
+                top[2] = top[1];
+                top[1] = top[0];
+                top[0] = count;
+            } else if (count > top[1]) {
+                top[2] = top[1];
+                top[1] = count;
+            } else if (count > top[2]) {
+                top[2] = count;
+            }
             count = 0;
         } else {
-            count += std::stoi(line);
+            count += stoi(line);
         }
     }
-
-    std::cout << largest << std::endl;
+    int ans = 0;
+    for (int val : top) {
+        ans += val;
+        cout << val << endl;
+    }
+    cout << ans << endl;
 
     file.close();
     return 0;
