@@ -2,15 +2,19 @@
 #include <fstream>
 #include <map>
 #include <string>
+#include <vector>
 
 using namespace std;
 
-map<char, int> charMap = {{'X', 1}, {'Y', 2}, {'Z', 3}};
-map<string, int> winCombos = {{"A X", 3}, {"A Y", 6}, {"A Z", 0},
-                              {"B X", 0}, {"B Y", 3}, {"B Z", 6},
-                              {"C X", 6}, {"C Y", 0}, {"C Z", 3}};
-
 int main() {
+    map<char, int> charMap = {{'X', 1}, {'Y', 2}, {'Z', 3}};
+    map<char, int> points = {{'X', 0}, {'Y', 3}, {'Z', 6}};
+    map<char, vector<map<char, char>>> winLossMap;
+
+    winLossMap['X'] = {{{'A', 'Z'}, {'B', 'X'}, {'C', 'Y'}}};
+    winLossMap['Y'] = {{{'A', 'X'}, {'B', 'Y'}, {'C', 'Z'}}};
+    winLossMap['Z'] = {{{'A', 'Y'}, {'B', 'Z'}, {'C', 'X'}}};
+
     fstream file("day2.txt");
     if (!file) {
         cerr << "Unable to read file";
@@ -20,7 +24,14 @@ int main() {
     string line;
     int score = 0;
     while (getline(file, line)) {
-        score += charMap[line[2]] + winCombos[line];
+        vector<map<char, char>> playKeys = winLossMap[line[2]];
+        char key;
+        for (int i = 0; i < playKeys.size(); i++) {
+            if (playKeys[i][line[0]]) {
+                key = playKeys[i][line[0]];
+            }
+        }
+        score += charMap[key] + points[line[2]];
     }
 
     cout << score << endl;
@@ -28,3 +39,7 @@ int main() {
     file.close();
     return 0;
 }
+
+// A Y
+// B X
+// C Z
