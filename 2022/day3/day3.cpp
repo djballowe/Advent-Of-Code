@@ -6,36 +6,39 @@
 
 using namespace std;
 
-string getFirstHalf(string line) {
-    string first = "";
-    for (int i = 0; i < line.size() / 2; i++) {
-        first += line[i];
-    }
-    return first;
-}
-
-string getSecondHalf(string line) {
-    string second = "";
-    for (int i = line.size() / 2; i < line.size(); i++) {
-        second += line[i];
-    }
-    return second;
-}
-
-char getUniqueChar(string first, string second) {
+char getUniqueChar(vector<string> &group) {
     char same;
     map<char, int> charMap;
-    for (int i = 0; i < first.size(); i++) {
-        charMap[first[i]] += 1;
-    }
-
-    for (int i = 0; i < second.size(); i++) {
-        if (charMap[second[i]]) {
-            same = second[i];
-            break;
+    for (int i = 0; i < group.size(); i++) {
+        for (int j = 0; j < group[i].size(); j++) {
+            char key = group[i][j];
+            charMap[key]++;
+            if (charMap[key] == 3) {
+                same = key;
+            }
         }
     }
+
     return same;
+}
+
+vector<string> clearDoubles(vector<string> &group) {
+    map<char, int> charMap;
+    vector<string> newArr;
+    string newGroup = "";
+    for (int i = 0; i < group.size(); i++) {
+        for (int j = 0; j < group[i].size(); j++) {
+            char key = group[i][j];
+            if (!charMap[key]) {
+                charMap[key]++;
+                newGroup += key;
+            }
+        }
+        newArr.push_back(newGroup);
+        newGroup = "";
+        charMap.clear();
+    }
+    return newArr;
 }
 
 int main() {
@@ -46,16 +49,19 @@ int main() {
     }
 
     string line;
-    vector<char> unique;
+    vector<string> group;
     int score = 0;
     while (getline(file, line)) {
-        string first = getFirstHalf(line);
-        string second = getSecondHalf(line);
-        char same = getUniqueChar(first, second);
-        score += same < 97 ? same - 38 : same - 96;
+        group.push_back(line);
+        if (group.size() == 3) {
+            vector<string> groupNoDoubles = clearDoubles(group);
+            char uniqueChar = getUniqueChar(groupNoDoubles);
+            group.clear();
+            score += uniqueChar < 97 ? uniqueChar - 38 : uniqueChar - 96;
+        }
     }
-
     cout << score << endl;
+
     file.close();
     return 0;
 }
