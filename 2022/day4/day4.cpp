@@ -31,8 +31,12 @@ int main() {
     string line;
     while (getline(file, line)) {
         vector<int> numbers = getNumbers(line);
-        if ((numbers[0] <= numbers[2] && numbers[1] >= numbers[3]) ||
-            (numbers[2] <= numbers[0] && numbers[3] >= numbers[1])) {
+        int startOf1 = numbers[0];
+        int startOf2 = numbers[2];
+        int endOf1 = numbers[1];
+        int endOf2 = numbers[3];
+        if ((startOf2 <= endOf1 && endOf2 >= endOf1) ||
+            (startOf1 <= endOf2 && endOf1 >= endOf2)) {
             count++;
         }
     }
@@ -42,3 +46,9 @@ int main() {
     file.close();
     return 0;
 }
+
+// 3456
+//   5678
+
+// 3456
+// 234
