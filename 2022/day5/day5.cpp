@@ -1,5 +1,6 @@
 #include "iostream"
 #include <algorithm>
+#include <deque>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -88,14 +89,24 @@ void moveBoxes(vector<vector<char>> &boxes, string path) {
             }
         }
 
-        for (int i = 0; i < instructions[0]; i++) {
-            int target = instructions[1] - 1;
-            int destination = instructions[2] - 1;
-            char top = boxes[target].back();
-            boxes[destination].push_back(top);
+        int target = instructions[1] - 1;
+        int destination = instructions[2] - 1;
+        int count = instructions[0];
+        deque<char> crane;
+        while (count) {
+            int top = boxes[target].back();
+            crane.push_front(top);
             boxes[target].pop_back();
+            count--;
         }
+
+        for (char val : crane) {
+            boxes[destination].push_back(val);
+        }
+        crane.clear();
     }
+    file.close();
+    return;
 }
 
 int main() {
