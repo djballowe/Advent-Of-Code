@@ -23,8 +23,8 @@ void day6Part1(string path) {
     while (r < line.size()) {
         for (int i = l; l <= r; i++) {
             char key = line[i];
-            if (char_count[key] || freq.size() == 4) {
-                if (freq.size() == 4) {
+            if (char_count[key] || freq.size() == 14) {
+                if (freq.size() == 14) {
                     ans = i;
                     break;
                 }
