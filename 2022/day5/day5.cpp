@@ -80,37 +80,35 @@ void moveBoxes(vector<vector<char>> &boxes, string path) {
         for (int i = 0; i < line.size(); i++) {
             if (line[i] >= 48 && line[i] <= 57) {
                 instruction += line[i];
-                if (i == line.size() - 1) {
-                    instruction.push_back(stoi(instruction));
+                if (instruction != "" &&
+                    (i == line.size() - 1 || line[i + 1] == ' ')) {
+                    instructions.push_back(stoi(instruction));
+                    instruction = "";
                 }
             }
         }
 
-        for (int val : instructions) {
-            cout << val << ",";
+        for (int i = 0; i < instructions[0]; i++) {
+            int target = instructions[1] - 1;
+            int destination = instructions[2] - 1;
+            char top = boxes[target].back();
+            boxes[destination].push_back(top);
+            boxes[target].pop_back();
         }
-        cout << endl;
-
-        //     for (int i = 0; i < instructions[0]; i++) {
-        //         int target = instructions[1] - 1;
-        //         int destination = instructions[2] - 1;
-        //         char top = boxes[target].back();
-        //         boxes[destination].push_back(top);
-        //         boxes[target].pop_back();
-        //     }
     }
 }
 
 int main() {
-    string mainFile = "day5-test.txt";
-    string boxFile = "day5-test-boxes.txt";
+    string mainFile = "day5.txt";
+    string boxFile = "day5-boxes.txt";
     vector<vector<char>> boxes;
     fillBoxLayout(boxes, boxFile);
     storeBoxes(boxes, boxFile);
     moveBoxes(boxes, mainFile);
     for (vector<char> &box : boxes) {
-        cout << box.back() << endl;
+        cout << box.back();
     }
+    cout << endl;
 
     return 0;
 }
