@@ -23,8 +23,7 @@ void parseLines(string line, vector<int> &left, vector<int> &right) {
     right.push_back(numbers[1]);
 }
 
-void parseLinesWithFreq(string line, vector<int> &left, vector<int> &right,
-                        map<int, int> &freq) {
+void parseLinesWithFreq(string line, vector<int> &left, vector<int> &right, map<int, int> &freq) {
     istringstream stream(line);
     vector<int> numbers;
     int num;
@@ -35,6 +34,7 @@ void parseLinesWithFreq(string line, vector<int> &left, vector<int> &right,
 
     left.push_back(numbers[0]);
     right.push_back(numbers[1]);
+    freq[right.back()]++;
 }
 
 void day1(string path) {
@@ -47,7 +47,7 @@ void day1(string path) {
     string line;
     vector<int> left;
     vector<int> right;
-    int ans;
+    int ans = 0;
     while (getline(file, line)) {
         parseLines(line, left, right);
     }
@@ -76,13 +76,15 @@ void day1Part2(string path) {
     vector<int> left;
     vector<int> right;
     map<int, int> freq;
-    int ans;
+    int ans = 0;
     while (getline(file, line)) {
-        parseLines(line, left, right);
+        parseLinesWithFreq(line, left, right, freq);
     }
 
-    for (const auto &[key, val] : freq) {
-        ans += key * val;
+    for (int val : left) {
+        if (freq[val]) {
+            ans += val * freq[val];
+        }
     }
 
     cout << "Part 2: " << ans << endl;
@@ -94,8 +96,8 @@ void day1Part2(string path) {
 int main() {
     string mainFile = "in.txt";
     string testFile = "in-test.txt";
-    day1(testFile);
-    day1Part2(testFile);
+    day1(mainFile);
+    day1Part2(mainFile);
 
     return 0;
 }
