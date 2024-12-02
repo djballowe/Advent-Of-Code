@@ -60,22 +60,52 @@ void day2(string path) {
     return;
 }
 
-bool isLineSafeWithException(string line) {
+// Part 2
+vector<int> convertLine(string line) {
     istringstream stream(line);
     int num;
-    bool safe = true;
     vector<int> numbers;
 
     while (stream >> num) {
         numbers.push_back(num);
     }
 
-    for (int i = 0; i < numbers.size(); i++) {
-       // use brute force here     
+    return numbers;
+}
+
+bool checkLine(vector<int> nums) {
+    int direction = nums[0] > nums[1] ? -1 : 1;
+    int j = 0;
+
+    for (int i = 1; i < nums.size(); i++) {
+        int diff = nums[i] - nums[j];
+        bool check = unsafeCheck(diff, direction);
+        if (check) {
+            return false;
+        }
+        j++;
+    }
+    return true;
+}
+
+bool isLineSafeWithException(vector<int> nums) {
+    int ignore = 0;
+    size_t numsSize = nums.size();
+    bool firstPass = checkLine(nums);
+    if (firstPass) {
+        return true;
+    }
+    for (int i = 0; i < numsSize; i++) {
+        vector<int> copy = nums;
+        copy.erase(copy.begin() + ignore);
+        bool check = checkLine(copy);
+        if (check) {
+            return true;
+        }
+        ignore++;
     }
 
-
-    return safe;
+    return false;
 }
 
 void day2Part2(string path) {
@@ -88,7 +118,8 @@ void day2Part2(string path) {
     string line;
     int ans = 0;
     while (getline(file, line)) {
-        bool isSafe = isLineSafeWithException(line);
+        vector<int> nums = convertLine(line);
+        bool isSafe = isLineSafeWithException(nums);
         if (isSafe) {
             ans++;
         }
@@ -104,10 +135,8 @@ void day2Part2(string path) {
 int main() {
     string mainFile = "in.txt";
     string testFile = "in-test.txt";
-    // day2(mainFile);
+    day2(mainFile);
     day2Part2(mainFile);
-    // 552 too high
-    // 508 too low
 
     return 0;
 }
