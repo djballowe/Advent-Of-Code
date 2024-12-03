@@ -7,60 +7,11 @@
 
 using namespace std;
 
+// Helpers
 bool unsafeCheck(int diff, int direction) {
     return (abs(diff) > 3 || !abs(diff) || (direction < 0 && diff > 0) || (direction > 0 && diff < 0));
 }
 
-// Part1
-bool isLineSafe(string line) {
-    istringstream stream(line);
-    int num;
-    bool safe = true;
-    vector<int> numbers;
-
-    while (stream >> num) {
-        numbers.push_back(num);
-    }
-
-    int direction = numbers[0] > numbers[1] ? -1 : 1;
-    int j = 0;
-
-    for (int i = 1; i < numbers.size(); i++) {
-        int diff = numbers[i] - numbers[j];
-        bool check = unsafeCheck(diff, direction);
-        if (check) {
-            safe = false;
-            break;
-        }
-        j++;
-    }
-
-    return safe;
-}
-
-void day2(string path) {
-    fstream file(path);
-    if (!file) {
-        cerr << "Unable to read file";
-        return;
-    }
-
-    string line;
-    int ans = 0;
-    while (getline(file, line)) {
-        bool isSafe = isLineSafe(line);
-        if (isSafe) {
-            ans++;
-        }
-    }
-
-    cout << "Part 1: " << ans << endl;
-
-    file.close();
-    return;
-}
-
-// Part 2
 vector<int> convertLine(string line) {
     istringstream stream(line);
     int num;
@@ -87,8 +38,34 @@ bool checkLine(vector<int> nums) {
     }
     return true;
 }
+//
 
-bool isLineSafeWithException(vector<int> nums) {
+// Part1
+void day2(string path) {
+    fstream file(path);
+    if (!file) {
+        cerr << "Unable to read file";
+        return;
+    }
+
+    string line;
+    int ans = 0;
+    while (getline(file, line)) {
+        vector<int> nums = convertLine(line);
+        bool isSafe = checkLine(nums);
+        if (isSafe) {
+            ans++;
+        }
+    }
+
+    cout << "Part 1: " << ans << endl;
+
+    file.close();
+    return;
+}
+
+// Part 2
+bool isLineSafePart2(vector<int> nums) {
     int ignore = 0;
     size_t numsSize = nums.size();
     bool firstPass = checkLine(nums);
@@ -119,7 +96,7 @@ void day2Part2(string path) {
     int ans = 0;
     while (getline(file, line)) {
         vector<int> nums = convertLine(line);
-        bool isSafe = isLineSafeWithException(nums);
+        bool isSafe = isLineSafePart2(nums);
         if (isSafe) {
             ans++;
         }
