@@ -1,4 +1,5 @@
 #include "iostream"
+#include <algorithm>
 #include <cstdlib>
 #include <fstream>
 #include <map>
@@ -56,21 +57,6 @@ void day5(string path) {
         }
     }
 
-    for (const auto &[key, val] : order) {
-        cout << key << ": ";
-        for (int num : val) {
-            cout << num << ", ";
-        }
-        cout << endl;
-    }
-
-    for (vector<int> lines : num_lines) {
-        for (int val : lines) {
-            cout << val << ",";
-        }
-        cout << endl;
-    }
-
     int ans = 0;
     for (int i = 0; i < num_lines.size(); i++) {
         int middle = num_lines[i][num_lines[i].size() / 2];
@@ -106,8 +92,40 @@ void day5Part2(string path) {
     }
 
     string line;
+    map<int, vector<int>> order;
+    vector<vector<int>> num_lines;
+    bool section = true;
     while (getline(file, line)) {
+        if (line == "") {
+            section = false;
+        } else {
+            section ? parseOrder(line, order) : parseLines(line, num_lines);
+        }
     }
+
+    int ans = 0;
+    for (int i = 0; i < num_lines.size(); i++) {
+        vector<int> &lines = num_lines[i];
+        vector<int> compare = num_lines[i];
+
+        // custom sort lambda
+        sort(lines.begin(), lines.end(), [&order](int a, int b) {
+            vector<int> rules = order[a];
+            for (int val : rules) {
+                if (b == val) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        if (lines != compare) {
+            int middle = lines[lines.size() / 2];
+            ans += middle;
+        }
+    }
+
+    cout << "Part 2: " << ans << endl;
 
     file.close();
     return;
@@ -115,10 +133,11 @@ void day5Part2(string path) {
 //
 
 int main() {
-    string mainFile = "in.txt";
-    string testFile = "in-test.txt";
-    day5(mainFile);
-    //    day5Part2(mainFile);
+    string main_file = "in.txt";
+    string test_file = "in-test.txt";
+    string test2 = "in-test2.txt";
+    day5(main_file);
+    day5Part2(main_file);
 
     return 0;
 }
