@@ -30,13 +30,14 @@ bool inBounds(pair<int, int> pos, vector<string> &grid) {
     return true;
 }
 
-void traverseGridUniqueOnly(vector<string> &grid, pair<int, int> &pos, map<pair<int, int>, int> &visited, int &unique_nodes) {
+void traverseGridUniqueOnly(vector<string> &grid, pair<int, int> pos, map<pair<int, int>, int> &visited, int &unique_nodes) {
     vector<pair<int, int>> directions = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
     int ptr = 0;
 
     while (true) {
         pair<int, int> next_pos = {pos.first + directions[ptr].first, pos.second + directions[ptr].second};
         if (!inBounds(next_pos, grid)) {
+            visited[pos]++;
             break;
         }
 
@@ -53,14 +54,10 @@ void traverseGridUniqueOnly(vector<string> &grid, pair<int, int> &pos, map<pair<
     }
 }
 
-bool isCycle(vector<string> &grid, pair<int, int> obstruction, pair<int, int> pos, pair<int, int> start) {
+bool isCycle(vector<string> &grid, pair<int, int> obstruction, pair<int, int> pos) {
     vector<pair<int, int>> directions = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
     int ptr = 0;
     map<VisitedNode, int> visited;
-
-    if (obstruction == start) {
-        return false;
-    }
 
     while (true) {
         pair<int, int> next_pos = {pos.first + directions[ptr].first, pos.second + directions[ptr].second};
@@ -73,6 +70,7 @@ bool isCycle(vector<string> &grid, pair<int, int> obstruction, pair<int, int> po
             continue;
         }
 
+        // if I ever hit a node that has both the same cords and direction Im in an infinite loop
         VisitedNode cords = {pos, directions[ptr]};
         visited[cords]++;
         if (visited[cords] == 2) {
@@ -107,7 +105,7 @@ void day6(string path) {
     map<pair<int, int>, int> visited;
     traverseGridUniqueOnly(grid, pos, visited, unique_nodes);
 
-    cout << "Part 1: " << unique_nodes << endl;
+    cout << "Part 1: " << visited.size() << endl;
 
     file.close();
     return;
@@ -133,24 +131,22 @@ void day6Part2(string path) {
         }
         j++;
     }
-    pair<int, int> start = pos;
     // same as part one but this time track the direction along with the cords
 
     int unique_nodes = 1;
     map<pair<int, int>, int> main_path;
     traverseGridUniqueOnly(grid, pos, main_path, unique_nodes);
-    cout << unique_nodes << endl;
     int cycles = 0;
 
     for (const auto &[key, val] : main_path) {
         pair<int, int> obstruction = key;
-        bool is_cycle = isCycle(grid, obstruction, pos, start);
+        bool is_cycle = isCycle(grid, obstruction, pos);
         if (is_cycle) {
             cycles++;
         }
     }
 
-    cout << cycles << endl;
+    cout << "Part 2: " << cycles << endl;
 
     file.close();
     return;
@@ -161,9 +157,8 @@ int main() {
     string main_file = "in.txt";
     string test_file = "in-test.txt";
     string test2 = "in-test2.txt";
-    // day6(main_file);
+    day6(test_file);
     day6Part2(main_file);
-    // 1907 too high
 
     return 0;
 }
