@@ -31,6 +31,7 @@ unordered_set<long> runSolutions(unordered_set<long> &solutions, long num) {
     for (long val : solutions) {
         add_solutions.insert(val * num);
         add_solutions.insert(val + num);
+        add_solutions.insert(stol(to_string(val) + to_string(num)));
     }
     return add_solutions;
 }
@@ -47,6 +48,7 @@ bool isLineValid(long target, vector<long> nums) {
     unordered_set<long> solutions;
     solutions.insert(nums[0] * nums[1]);
     solutions.insert(nums[0] + nums[1]);
+    solutions.insert(stol(to_string(nums[0]) + to_string(nums[1])));
     for (int i = 2; i < nums.size(); i++) {
         solutions = runSolutions(solutions, nums[i]);
     }
@@ -57,8 +59,7 @@ bool isLineValid(long target, vector<long> nums) {
     return false;
 }
 
-// Part1
-void day6(string path) {
+void day7(string path) {
     fstream file(path);
     if (!file) {
         cerr << "Unable to read file";
@@ -72,14 +73,6 @@ void day6(string path) {
         parseLine(line, inputs);
     }
 
-    // for (pair<long, vector<long>> line : inputs) {
-    //     cout << line.first << ":";
-    //     for (long val : line.second) {
-    //         cout << val << ",";
-    //     }
-    //     cout << endl;
-    // }
-
     for (pair<long, vector<long>> line : inputs) {
         bool valid = isLineValid(line.first, line.second);
         if (valid) {
@@ -91,17 +84,11 @@ void day6(string path) {
 
     return;
 }
-//
-
-// Part 2
-void day6Part2() { return; }
-//
 
 int main() {
     string test_file = "in-test.txt";
     string main_file = "in.txt";
-    day6(main_file);
-    // day6Part2();
+    day7(main_file);
 
     return 0;
 }
