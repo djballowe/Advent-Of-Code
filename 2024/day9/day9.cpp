@@ -73,10 +73,6 @@ void day9(string path) {
     while (getline(file, line)) {
         vector<int> int_line = parseLine(line);
         vector<int> disk = parseDisk(int_line);
-        for (int val : disk) {
-            cout << val;
-        }
-        cout << endl;
         for (int i = 0; i < disk.size(); i++) {
             ans += disk[i] * i;
         }
@@ -99,7 +95,7 @@ struct FileNode {
     FileNode *prev;
 };
 
-void buildDisk(vector<int> line) {
+FileNode buildDisk(vector<int> line) {
     int id = 0;
     FileNode start = {id, line[0], line[1]};
     FileNode *end = &start;
@@ -116,26 +112,33 @@ void buildDisk(vector<int> line) {
         end = next;
     }
 
-    FileNode *ptr = &start;
-    while (ptr) {
-        cout << "[" << ptr->size << "," << ptr->space << "," << ptr->id << "]" << ",";
-        ptr = ptr->next;
-    }
-
     FileNode *r = end;
-    while (end) {
+    while (r) {
+        FileNode *prev = r->prev;
         for (FileNode *l = &start; l != r && l; l = l->next) {
-            FileNode *prev = r->prev;
             if (l->space >= r->size) {
                 if (r->prev) {
                     r->prev->next = r->next;
                     r->prev->space += r->space + r->size;
                 }
+                if (r->next) {
+                    r->next->prev = r->prev;
+                }
+                if (l->next) {
+                    l->next->prev = r;
+                    r->next = l->next;
+                }
+                r->space = l->space - r->size;
+                l->space = 0;
+                l->next = r;
+                r->prev = l;
+                break;
             }
         }
+        r = prev;
     }
 
-    return;
+    return start;
 }
 
 void day9Part2(string path) {
@@ -146,10 +149,30 @@ void day9Part2(string path) {
     }
 
     string line;
+    long ans = 0;
 
     while (getline(file, line)) {
         vector<int> int_line = parseLine(line);
-        buildDisk(int_line);
+        FileNode disk = buildDisk(int_line);
+        FileNode *ptr = &disk;
+        int check = 0;
+        while (ptr) {
+            long product = 0;
+            int count = ptr->size;
+            while (count) {
+                product += ptr->id * check;
+                count--;
+                check++;
+            }
+
+            int spaceCount = ptr->space;
+            while (spaceCount) {
+                spaceCount--;
+                check++;
+            }
+            ans += product;
+            ptr = ptr->next;
+        }
     }
 
     file.close();
@@ -160,8 +183,8 @@ void day9Part2(string path) {
 int main() {
     string main_file = "in.txt";
     string test_file = "in-test.txt";
-    // day9(main_file);
-    day9Part2(test_file);
+    day9(main_file);
+    day9Part2(main_file);
 
     return 0;
 }
