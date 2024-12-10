@@ -90,6 +90,54 @@ void day9(string path) {
 //
 
 // Part 2
+
+struct FileNode {
+    int id;
+    int size;
+    int space;
+    FileNode *next;
+    FileNode *prev;
+};
+
+void buildDisk(vector<int> line) {
+    int id = 0;
+    FileNode start = {id, line[0], line[1]};
+    FileNode *end = &start;
+
+    for (int i = 2; i < line.size(); i += 2) {
+        FileNode *next = new FileNode();
+        next->id = ++id;
+        next->size = line[i];
+        if (i + 1 < line.size()) {
+            next->space = line[i + 1];
+        }
+        next->prev = end;
+        end->next = next;
+        end = next;
+    }
+
+    FileNode *ptr = &start;
+    while (ptr) {
+        cout << "[" << ptr->size << "," << ptr->space << "," << ptr->id << "]" << ",";
+        ptr = ptr->next;
+    }
+
+    FileNode *r = end;
+    while (end) {
+        for (FileNode *l = &start; l != r && l; l = l->next) {
+            FileNode *prev = r->prev;
+            if (l->space >= r->size) {
+                if (r->prev) {
+                    r->prev->next = r->next;
+                    r->prev->space += r->space + r->size;
+                }
+            }
+        }
+    }
+
+    return;
+}
+
 void day9Part2(string path) {
     fstream file(path);
     if (!file) {
@@ -101,6 +149,7 @@ void day9Part2(string path) {
 
     while (getline(file, line)) {
         vector<int> int_line = parseLine(line);
+        buildDisk(int_line);
     }
 
     file.close();
