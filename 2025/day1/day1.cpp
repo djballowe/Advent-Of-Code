@@ -22,16 +22,18 @@ int main() {
     int ans = 0;
 
     for (std::string line : input) {
+        int prev_tick = tick;
         tick += parseInstructions(line);
+        if (prev_tick < 0 && tick >= 0 || prev_tick > 0 && tick <= 0) {
+            ans++;
+        }
+        ans += std::abs(tick / 100);
         if (tick > 99 || tick < 0) {
             tick = tick % 100;
         }
-        ans += tick == 0 ? 1 : 0;
     }
 
     std::cout << "answer is: " << ans << std::endl;
 
     return 0;
 }
-
-// 459 to low
