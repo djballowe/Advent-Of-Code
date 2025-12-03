@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/home/david/Github/Advent-Of-Code/build/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

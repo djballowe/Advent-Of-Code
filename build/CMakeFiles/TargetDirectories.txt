@@ -1,4 +1,0 @@
-/home/david/Github/Advent-Of-Code/build/CMakeFiles/helper_functions.dir
-/home/david/Github/Advent-Of-Code/build/CMakeFiles/day1_program.dir
-/home/david/Github/Advent-Of-Code/build/CMakeFiles/edit_cache.dir
-/home/david/Github/Advent-Of-Code/build/CMakeFiles/rebuild_cache.dir
