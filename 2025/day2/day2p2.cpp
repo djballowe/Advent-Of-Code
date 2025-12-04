@@ -26,11 +26,6 @@ std::vector<std::pair<long long, long long>> parseRanges(std::string input) {
         char dash;
 
         if (std::getline(ss, first, '-') && ss >> second) {
-            // this is not needed but fuck it 100ms faster
-            if (first.size() % 2 != 0 && second.size() % 2 != 0) {
-                ss.clear();
-                continue;
-            }
             ranges.push_back({std::stol(first), std::stol(second)});
         }
         ss.clear();
@@ -50,13 +45,37 @@ int main() {
     for (std::pair<long long, long long> range : ranges) {
         for (long long i = range.first; i <= range.second; i++) {
             std::string num_string = std::to_string(i);
-            if (num_string.size() % 2 == 0) {
-                size_t mid = num_string.size() / 2;
-                std::string a = num_string.substr(0, mid);
-                std::string b = num_string.substr(mid, num_string.size());
-                if (a == b) {
-                    ans += std::stol(a + b);
+            size_t match = false;
+
+            size_t compare_num_idx = 0;
+            std::string compare_num = {num_string[compare_num_idx]};
+            size_t start = compare_num.size();
+            size_t len = compare_num.size();
+
+            while (compare_num.size() <= num_string.size() / 2) {
+                std::string temp_num = num_string.substr(start, len);
+
+                // if you get a match shift the window
+                // break if youre at the end of the string
+                if (compare_num == temp_num) {
+                    if (start + len == num_string.size()) {
+                        match = true;
+                        break;
+                    }
+                    start += temp_num.size();
+                    len = temp_num.size();
+                } else {
+                    // if you dont increase the size of the start num and start over
+                    compare_num.push_back(num_string[++compare_num_idx]);
+                    start = compare_num.size();
+                    len = compare_num.size();
+                    match = false;
                 }
+            }
+
+            if (match) {
+                std::cout << num_string << std::endl;
+                ans += std::stol(num_string);
             }
         }
     }
