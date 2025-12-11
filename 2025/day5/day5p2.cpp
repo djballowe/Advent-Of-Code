@@ -1,4 +1,5 @@
 #include "../../helpers/helpers.h"
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -7,13 +8,11 @@
 
 struct SplitData {
     std::vector<std::pair<long long, long long>> ranges;
-    std::vector<long long> nums;
 };
 
 SplitData splitInput(std::vector<std::string> &input) {
     SplitData split;
     std::vector<std::pair<long long, long long>> ranges;
-    std::vector<long long> nums;
 
     bool range_flip = true;
 
@@ -31,23 +30,29 @@ SplitData splitInput(std::vector<std::string> &input) {
         }
     }
 
-    return {ranges, nums};
+    return {ranges};
 }
 
 int main() {
     std::string path = "../2025/day5/in.txt";
     std::vector<std::string> input = AdventHelpers::parseLines(path);
-    int ans = 0;
+    long long ans = 0;
 
     SplitData split_input = splitInput(input);
 
-    for (long long num : split_input.nums) {
-        for (std::pair<long long, long long> range : split_input.ranges) {
-            if (num >= range.first && num <= range.second) {
-                ans++;
-                break;
-            }
+    std::sort(split_input.ranges.begin(), split_input.ranges.end());
+    long long prev_end = 0;
+
+    for (std::pair<long long, long long> ranges : split_input.ranges) {
+        long long start_range = ranges.first;
+        if (prev_end >= ranges.first && prev_end >= ranges.second) {
+            continue;
         }
+        if (prev_end >= ranges.first) {
+            start_range = prev_end + 1;
+        }
+        ans += (ranges.second - start_range) + 1;
+        prev_end = ranges.second;
     }
 
     std::cout << ans << std::endl;
