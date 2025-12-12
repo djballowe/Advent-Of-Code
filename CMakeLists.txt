@@ -8,5 +8,11 @@ target_include_directories(helper_functions PUBLIC helpers)
 # add_executable(day5_program 2025/day5/day5.cpp)
 # target_link_libraries(day5_program PRIVATE helper_functions)
 
-add_executable(day5_program 2025/day5/day5p2.cpp)
-target_link_libraries(day5_program PRIVATE helper_functions)
+# add_executable(day5_program 2025/day5/day5p2.cpp)
+# target_link_libraries(day5_program PRIVATE helper_functions)
+
+# add_executable(day6_program 2025/day6/day6.cpp)
+# target_link_libraries(day6_program PRIVATE helper_functions)
+
+add_executable(day6_program 2025/day6/day6p2.cpp)
+target_link_libraries(day6_program PRIVATE helper_functions)
