@@ -17,5 +17,8 @@ target_include_directories(helper_functions PUBLIC helpers)
 # add_executable(day6_program 2025/day6/day6p2.cpp)
 # target_link_libraries(day6_program PRIVATE helper_functions)
 
-add_executable(day7_program 2025/day7/day7.cpp)
+# add_executable(day7_program 2025/day7/day7.cpp)
+# target_link_libraries(day7_program PRIVATE helper_functions)
+
+add_executable(day7_program 2025/day7/day7p2.cpp)
 target_link_libraries(day7_program PRIVATE helper_functions)
